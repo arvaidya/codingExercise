@@ -1,0 +1,210 @@
+
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Ractive test</title>
+</head>
+
+<body>
+  
+
+  <script src='http://cdn.ractivejs.org/latest/ractive.min.js'></script>
+
+
+<div id='container'></div>
+
+<script id="template" type="text/ractive">
+
+<svg width=1000 height=200>
+  
+
+  <!-- offset everything by 30,30 so we can see the labels -->
+
+    
+    <!-- the rectangle -->
+    <rect width='{{width}}' height='{{height}}' x="30" y="30" style="fill:white;fill-opacity:0.1;stroke:blue;stroke-width:0.1"/>
+
+	    <rect width='{{width1}}' height='{{height1}}' x="30" y="30" style="fill:{{#if percent1>100}}red{{else}}blue{{/if}};fill-opacity:0.8;"/>
+
+ <text class='area' x='250' y='50'>
+		{{percent1}} %
+    </text>
+
+	    <!-- the rectangle -->
+    <rect width='{{width}}' height='{{height}}' x="30" y="80" style="fill:white;fill-opacity:0.1;stroke:blue;stroke-width:0.1"/>
+    <rect width='{{width2}}' height='{{height2}}' fill='blue' x="30" y="80"  style="fill:{{#if percent2>100}}red{{else}}blue{{/if}};fill-opacity:0.8;"/>
+
+	 <text class='area' x='250' y='100'>
+		{{percent2}} %
+    </text>
+
+	    <!-- the rectangle -->
+    <rect width='{{width}}' height='{{height}}' x="30" y="130" style="fill:white;fill-opacity:0.1;stroke:blue;stroke-width:0.1"/>
+    <rect width='{{width3}}' height='{{height3}}' fill='green' x="30" y="130"  style="fill:{{#if percent3>100}}red{{else}}blue{{/if}};fill-opacity:0.8;"/>
+
+	 <text class='area' x='250' y='150'>
+		{{percent3}} %
+    </text>
+   
+  
+</svg>
+<br>
+
+<select value='{{selectedIndex}}'>
+<option value=1>#Progress1</option>
+<option value=2>#Progress2</option>
+<option value=3>#Progress3</option>
+</select>
+
+<button on-click="min25">-25</button>
+
+<button on-click="min10">-10</button>
+
+<button on-click="plus10">+10</button>
+
+<button on-click="plus25">+25</button>
+
+</script>
+
+  <script>
+ractive = new Ractive({
+  el: '#container',
+  template: '#template',
+  data: {
+    width: 500,
+    height: 35,
+	
+	width1: 0,
+    height1: 35,
+	width2: 0,
+    height2: 35,
+	width3: 0,
+    height3: 35,
+
+	percent1:0,
+	percent2:0,
+	percent3:0,
+  }
+});
+
+/*
+ractive.animate({ width: 300, height: 20 }, {
+  easing: 'easeOut',
+  duration: 800
+});
+
+*/
+
+var selectedWidth='';
+var percent = 0;
+var width1=0;
+var width2=0;
+var width3=0;
+var width=500;
+
+var a = 0;
+
+ractive.on({  min25: function ( event ) {
+	
+	
+
+		changeBar(-4);
+  },
+   min10: function ( event ) {
+	changeBar(-10);
+  },
+   plus10: function ( event ) {
+ 	changeBar(10);
+  },
+   plus25: function ( event ) {
+	changeBar(4);
+  }
+
+});
+
+var selectedBar='';
+ // when the user makes a selection from the drop-down, update the chart
+  ractive.observe( 'selectedIndex', function ( index ) {
+    // Change `this.set()` to `this.animate()`
+    selectedBar=index;
+	
+  });
+
+
+var calculatedPercent=0;
+
+  function changeBar(percent){
+
+	//var percent = Math.round(percent);
+
+if(selectedBar==='1'){
+
+		calculatedPercent = width1 + (width/percent);
+	
+		if(calculatedPercent>=0){
+
+			if(calculatedPercent<=500){
+
+				width1 = calculatedPercent;
+			}
+
+			ractive.animate({ width1: width1,percent1:calculatedPercent/5}, {
+		  easing: 'easeOut',
+		  duration: 800
+			});
+
+		}
+
+	}else if(selectedBar==='2'){
+
+		calculatedPercent = width2 + (width/percent);
+
+		if(calculatedPercent>=0){
+
+				if(calculatedPercent<=500){
+
+					width2 = calculatedPercent;
+		
+				}
+
+			ractive.animate({ width2: width2,percent2:calculatedPercent/5}, {
+			easing: 'easeOut',
+			duration: 800
+		});
+
+		}
+
+	}else if(selectedBar==='3'){
+
+	calculatedPercent = width3 + (width/percent);
+
+		if(calculatedPercent>=0){
+
+				if(calculatedPercent<=500){
+
+					width3 = calculatedPercent;
+				}else{
+
+		calculatedPercent = width3 + (width/percent);
+				}
+
+
+			ractive.animate({ width3: width3,percent3:calculatedPercent/5}, {
+			easing: 'easeOut',
+			duration: 800
+		});
+
+		}
+
+	}
+
+  }
+
+
+
+
+
+  </script>
+</body>
+</html>
